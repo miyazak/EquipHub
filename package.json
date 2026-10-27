@@ -1,0 +1,20 @@
+{
+  "name": "equiphub",
+  "version": "1.0.0",
+  "description": "Equipment lending system for internal demos",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [
+    "equipment",
+    "lending",
+    "demo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

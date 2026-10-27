@@ -1,0 +1,273 @@
+:root {
+  --bg: #f6f8f6;
+  --bg-alt: #e7efe8;
+  --ink: #20312a;
+  --muted: #5f7568;
+  --card: #ffffffcc;
+  --line: #d5e0d8;
+  --accent: #0f8a6e;
+  --accent-strong: #0a6d56;
+  --warn: #d06c3f;
+  --ok: #2d8a4c;
+  --shadow: 0 14px 32px rgba(32, 49, 42, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 10% 10%, #ffffff, var(--bg));
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1,
+.kicker {
+  font-family: 'Manrope', sans-serif;
+}
+
+.layout {
+  width: min(1100px, 92vw);
+  margin: 36px auto 60px;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 18px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px);
+}
+
+.hero {
+  padding: 28px;
+  animation: rise 480ms ease-out;
+}
+
+.kicker {
+  margin: 0;
+  color: var(--accent-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+
+h1 {
+  margin: 8px 0 6px;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.lead {
+  margin: 0;
+  color: var(--muted);
+}
+
+.stats {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stat {
+  background: linear-gradient(120deg, #ffffff, var(--bg-alt));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.stat .label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.stat .value {
+  display: block;
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 1.25rem;
+  font-family: 'Manrope', sans-serif;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 180px 1fr auto;
+  gap: 12px;
+  align-items: end;
+  padding: 18px;
+  animation: rise 560ms ease-out;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+select,
+input {
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 12px;
+  font-size: 0.95rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 820px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.84rem;
+}
+
+tr {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeInRow 300ms ease-out forwards;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.badge.available {
+  background: #dff4e6;
+  color: var(--ok);
+}
+
+.badge.borrowed {
+  background: #fbe8df;
+  color: var(--warn);
+}
+
+.btn {
+  height: 42px;
+  border: none;
+  background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+  color: #fff;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+.btn-small {
+  height: 34px;
+  font-size: 0.85rem;
+  padding: 0 10px;
+}
+
+.borrow-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.borrow-form input {
+  height: 34px;
+  font-size: 0.85rem;
+}
+
+.inline-action {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.bg-shape {
+  position: fixed;
+  border-radius: 999px;
+  z-index: 1;
+  filter: blur(14px);
+  opacity: 0.45;
+}
+
+.bg-shape-a {
+  width: 260px;
+  height: 260px;
+  background: #99dec5;
+  top: -80px;
+  right: -40px;
+}
+
+.bg-shape-b {
+  width: 240px;
+  height: 240px;
+  background: #ffe2be;
+  bottom: -70px;
+  left: -50px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRow {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 860px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
