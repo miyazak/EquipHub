@@ -6,7 +6,7 @@
 
 - `Status`: Backlog / Ready / In Progress / In Review / Done
 - `Type`: Epic / Story / Task / Bug / Spike
-- `Priority`: P0 / P1 / P2
+- `Priority`: P1 / P2 / P3
 - `Sprint`: Sprint 1 / Sprint 2
 - `Size`: XS / S / M / L
 - `AI Support`: None / Prompted / Agent-driven
@@ -41,7 +41,6 @@
 
 1. `BUG: 同時貸出時に二重予約が発生する`
 2. `BUG: 返却期限が過去日でも登録できる`
-3. `BUG: キーワード検索が大文字小文字を正規化していない`
 
 ## AI 駆動開発デモの観点
 
