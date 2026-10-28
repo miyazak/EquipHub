@@ -1,0 +1,41 @@
+name: Bug
+description: 不具合の報告
+title: "BUG: "
+labels: ["bug"]
+projects: ["miyazak/3"]
+body:
+  - type: textarea
+    id: symptom
+    attributes:
+      label: 現象
+      description: 何が起きるか
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      value: |
+        1.
+        2.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する動作
+      description: 本来どうなるべきか
+    validations:
+      required: true
+  - type: textarea
+    id: cause
+    attributes:
+      label: 原因の見立て
+      description: 該当コードの場所（ファイル名:行番号）と理由。分からなければ空欄で構いません
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 受け入れ条件
+      description: 修正後に満たすべき条件
+      value: |
+        - [ ]

@@ -69,6 +69,8 @@ Story はユーザー視点の「〇〇として、△△したい」で書く�
 
 ## 本文テンプレート
 
+`.github/ISSUE_TEMPLATE/` の各テンプレート（Web 画面から起票する人向け）と同じ項目にする（変更する場合は両方をそろえる）。
+
 ### Story / Task / Spike
 
 ```markdown
