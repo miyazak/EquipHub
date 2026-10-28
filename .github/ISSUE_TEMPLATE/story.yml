@@ -1,0 +1,28 @@
+name: Story
+description: ユーザー視点の要求（〇〇として、△△したい）
+title: "STORY: "
+labels: ["story"]
+projects: ["miyazak/3"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 「〇〇として、△△したい。なぜなら□□だから」の形で、誰が・何を・なぜ求めているか
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 受け入れ条件
+      description: 第三者が確認できる具体的な条件
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: 補足
+      value: |
+        - 関連: #

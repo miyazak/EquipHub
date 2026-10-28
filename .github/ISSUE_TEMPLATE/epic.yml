@@ -1,0 +1,27 @@
+name: Epic
+description: 複数の Story をまとめる大きな目標
+title: "EPIC: "
+labels: ["epic"]
+projects: ["miyazak/3"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: 目的
+      description: この Epic で実現したいこと
+    validations:
+      required: true
+  - type: textarea
+    id: children
+    attributes:
+      label: 子 Issue
+      description: この Epic に含まれる Story / Task
+      value: |
+        - [ ] #
+  - type: textarea
+    id: done
+    attributes:
+      label: 完了の定義
+      description: Epic 全体が完了したと言える状態
+    validations:
+      required: true

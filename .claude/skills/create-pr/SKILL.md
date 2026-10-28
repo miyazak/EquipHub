@@ -38,6 +38,8 @@ description: EquipHub の変更をコミットし、GitHub に Pull Request を�
 
 ## 本文テンプレート
 
+`.github/pull_request_template.md` と同じ構成にする（変更する場合は両方をそろえる）。
+
 ```markdown
 Closes #<issue番号>
 

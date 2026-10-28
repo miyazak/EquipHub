@@ -1,0 +1,29 @@
+name: Task
+description: Story を実現するための具体的な作業
+title: "TASK: "
+labels: ["task"]
+projects: ["miyazak/3"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 何を・なぜ行うか
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 受け入れ条件
+      description: 第三者が確認できる具体的な条件（例: 過去日を指定すると 400 が返る）
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: 補足
+      value: |
+        - 関連: #
+        - 影響範囲:

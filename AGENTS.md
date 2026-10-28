@@ -21,6 +21,8 @@ public/app.js        画面ロジック
 public/styles.css    スタイル
 data/db.json         備品データ（.gitignore 対象）
 docs/project-seed.md GitHub Projects 用のバックログ種
+.github/             Issue テンプレート（Epic / Story / Task / Bug）と PR テンプレート
+.claude/skills/      Claude Code のスキル（create-issue / create-pr）
 ```
 
 ## コマンド
