@@ -4,7 +4,7 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const dbPath = path.join(__dirname, '..', 'data', 'db.json');
+const dbPath = process.env.DB_PATH || path.join(__dirname, '..', 'data', 'db.json');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
@@ -99,6 +99,10 @@ app.post('/api/items/:id/return', (req, res) => {
   return res.json(item);
 });
 
-app.listen(PORT, () => {
-  console.log(`EquipHub is running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`EquipHub is running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
