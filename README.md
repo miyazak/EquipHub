@@ -29,6 +29,8 @@
 | できること | 方法 |
 |---|---|
 | Issue の起票 | Claude Code の `/create-issue`。ラベル付与、Project「for demo」への追加、Priority / Size の設定まで行う |
+| Issue の分解 | Claude Code の `/split-issue`。Epic / Story をコードと照らし合わせて子 Issue に分解し、起票とサブ Issue の登録まで行う |
+| テスト観点の作成 | Claude Code の `/create-test-viewpoints`。受け入れ条件とコードからテスト観点（正常系・異常系・境界値など）を作り、Issue にコメントで記録する |
 | Issue の起票（Web 画面） | 「New issue」から Epic / Story / Task / Bug のテンプレートを選ぶ。種類ラベルの付与と Project への追加は自動 |
 | PR の作成 | Claude Code の `/create-pr`。規約どおりのコミット・push・PR 作成（`Closes #<番号>`、AI 生成部分、人間レビュー観点）を行う |
 | PR の作成（Web 画面） | PR テンプレートが自動で入る |
