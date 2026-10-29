@@ -1,0 +1,141 @@
+# 優先度ラベル（p1〜p3）を Project「for demo」の Priority に同期する。
+# 起票時に優先度ラベルまたは Size がなければ、Issue に設定を促すコメントを付ける。
+# 実行には Secret PROJECT_TOKEN（classic PAT、project スコープ）が必要。未登録の場合は何もしない。
+name: Sync project priority
+
+on:
+  issues:
+    types: [opened, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: sync-project-priority-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+env:
+  PROJECT_OWNER: miyazak
+  PROJECT_NUMBER: 3
+
+jobs:
+  sync:
+    # 優先度ラベル以外のラベル変更では実行しない
+    if: >-
+      github.event.action == 'opened' ||
+      github.event.action == 'reopened' ||
+      contains(fromJSON('["p1", "p2", "p3"]'), github.event.label.name)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Priority from label
+        id: sync
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+          LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::notice::Secret PROJECT_TOKEN が未登録のため、Priority の同期をスキップします"
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+
+          # 優先度ラベルが複数ある場合は、優先度の高いもの（p1 が最優先）を使う
+          label=$(echo "$LABELS" | jq -r '[.[] | select(test("^p[123]$"))] | sort | .[0] // empty')
+
+          project=$(gh api graphql \
+            -f query='query($owner: String!, $number: Int!) {
+              user(login: $owner) {
+                projectV2(number: $number) {
+                  id
+                  field(name: "Priority") { ... on ProjectV2SingleSelectField { id options { id name } } }
+                }
+              }
+            }' \
+            -f owner="$PROJECT_OWNER" -F number="$PROJECT_NUMBER")
+          project_id=$(echo "$project" | jq -r '.data.user.projectV2.id')
+          field_id=$(echo "$project" | jq -r '.data.user.projectV2.field.id')
+
+          # Issue の Project アイテムを探し、なければ追加する
+          item_id=$(gh api graphql \
+            -f query='query($id: ID!) {
+              node(id: $id) { ... on Issue { projectItems(first: 50) { nodes { id project { id } } } } }
+            }' \
+            -f id="$ISSUE_NODE_ID" \
+            | jq -r --arg project "$project_id" '.data.node.projectItems.nodes[] | select(.project.id == $project) | .id' \
+            | head -n 1)
+          if [ -z "$item_id" ]; then
+            item_id=$(gh api graphql \
+              -f query='mutation($project: ID!, $content: ID!) {
+                addProjectV2ItemById(input: { projectId: $project, contentId: $content }) { item { id } }
+              }' \
+              -f project="$project_id" -f content="$ISSUE_NODE_ID" \
+              --jq '.data.addProjectV2ItemById.item.id')
+            echo "Project に追加しました: $item_id"
+          fi
+          echo "item_id=$item_id" >> "$GITHUB_OUTPUT"
+
+          if [ -n "$label" ]; then
+            priority=$(echo "$label" | tr '[:lower:]' '[:upper:]')
+            option_id=$(echo "$project" | jq -r --arg name "$priority" '.data.user.projectV2.field.options[] | select(.name == $name) | .id')
+            gh api graphql \
+              -f query='mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $project, itemId: $item, fieldId: $field, value: { singleSelectOptionId: $option }
+                }) { projectV2Item { id } }
+              }' \
+              -f project="$project_id" -f item="$item_id" -f field="$field_id" -f option="$option_id" > /dev/null
+            echo "Priority を $priority に設定しました"
+          elif [ "${{ github.event.action }}" = "unlabeled" ]; then
+            # 優先度ラベルがすべて外された場合は、Priority も空にする
+            gh api graphql \
+              -f query='mutation($project: ID!, $item: ID!, $field: ID!) {
+                clearProjectV2ItemFieldValue(input: { projectId: $project, itemId: $item, fieldId: $field }) { projectV2Item { id } }
+              }' \
+              -f project="$project_id" -f item="$item_id" -f field="$field_id" > /dev/null
+            echo "優先度ラベルがないため、Priority を空にしました"
+          else
+            echo "優先度ラベルがないため、Priority は変更しません"
+          fi
+
+      - name: Remind missing priority or size
+        if: github.event.action == 'opened' && steps.sync.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          ITEM_ID: ${{ steps.sync.outputs.item_id }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # create-issue スキルは起票直後にラベルや Size を設定するため、少し待ってから確認する
+          sleep 120
+
+          labels=$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '[.labels[].name | select(test("^p[123]$"))] | length')
+          size=$(gh api graphql \
+            -f query='query($id: ID!) {
+              node(id: $id) { ... on ProjectV2Item { fieldValueByName(name: "Size") { ... on ProjectV2ItemFieldSingleSelectValue { name } } } }
+            }' \
+            -f id="$ITEM_ID" --jq '.data.node.fieldValueByName.name // empty')
+
+          missing=()
+          [ "$labels" -eq 0 ] && missing+=("- 優先度ラベル（\`p1\` / \`p2\` / \`p3\`）: 付けると Project の Priority に自動で反映されます")
+          [ -z "$size" ] && missing+=("- Project の Size（XS / S / M / L / XL）: Project の画面で設定してください")
+
+          if [ "${#missing[@]}" -eq 0 ]; then
+            echo "優先度ラベルと Size は設定済みです"
+            exit 0
+          fi
+
+          {
+            echo "この Issue には、次の項目が設定されていません。"
+            echo
+            printf '%s\n' "${missing[@]}"
+            echo
+            echo "設定ルールは AGENTS.md の「GitHub Projects とラベル」を参照してください。"
+          } > comment.md
+          GH_TOKEN="${{ github.token }}" gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body-file comment.md
