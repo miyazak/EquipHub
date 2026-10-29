@@ -22,7 +22,7 @@ public/styles.css    スタイル
 data/db.json         備品データ（.gitignore 対象）
 docs/project-seed.md GitHub Projects 用のバックログ種
 .github/             Issue テンプレート（Epic / Story / Task / Bug）と PR テンプレート
-.claude/skills/      Claude Code のスキル（create-issue / create-pr）
+.claude/skills/      Claude Code のスキル（create-issue / split-issue / create-test-viewpoints / create-pr）
 ```
 
 ## コマンド
@@ -56,6 +56,8 @@ npm run dev     # ファイル変更を監視して起動
 Issue → ブランチ → PR → マージ（GitHub Projects 上で Done に自動遷移）の流れで進めます。
 
 1. 作業は必ず Issue に紐づける（Issue 作成は `create-issue` スキルを使う）
+   - Epic / Story や Size が L 以上の Issue は、`split-issue` スキルで 1 つの PR で完了できる子 Issue に分解してから着手する
+   - 機能の追加・変更・不具合修正では、実装に着手する前に `create-test-viewpoints` スキルでテスト観点を作成し、Issue に記録する
 2. ブランチ名: `<type>/<issue番号>-<短い英語の説明>`（例: `fix/12-reject-past-due-date`）
    - type: `feat` / `fix` / `docs` / `chore` / `refactor` / `test`
    - 手元で作業ブランチを作成したら、Project 上の Issue の Status を `In progress` に変更する（手順は下の「Status の変更」）
