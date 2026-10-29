@@ -118,7 +118,7 @@ describe('GET /api/stats', () => {
   it('総数・貸出中・貸出可の件数を返す', async () => {
     const res = await request('GET', '/api/stats');
     assert.equal(res.status, 200);
-    assert.deepEqual(res.body, { total: 3, borrowed: 1, available: 2 });
+    assert.deepEqual(res.body, { total: 99, borrowed: 1, available: 2 }); // CI の失敗表示の確認用（マージしない）
   });
 
   it('貸出後は件数が更新される', async () => {
