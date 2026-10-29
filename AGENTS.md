@@ -32,9 +32,12 @@ docs/project-seed.md GitHub Projects 用のバックログ種
 npm install     # 依存関係のインストール
 npm start       # 起動（http://localhost:3000）
 npm run dev     # ファイル変更を監視して起動
+npm test        # API の自動テストを実行
 ```
 
-テストは未整備です（`npm test` は存在しません）。変更後は `npm start` で起動し、該当 API や画面を実際に操作して確認してください。
+- 変更後は `npm test` を実行し、すべて成功することを確認する。画面の変更は `npm start` で起動して実際に操作して確認する
+- テストは `test/` に置き、Node.js 標準の `node:test` と `fetch` で書く（テスト用の依存パッケージは追加しない）
+- テストは一時ファイルを `DB_PATH` で指定して使うため、`data/db.json` を書き換えない。API の動作を変えたら、対応するテストも追加・修正する
 
 ## 注意事項
 
