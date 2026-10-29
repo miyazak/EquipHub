@@ -33,8 +33,12 @@ EquipHub リポジトリ（`miyazak/EquipHub`）に Issue を作成し、Project
 7. Project のフィールド（Priority / Size / Sprint）を設定する
 
    ```bash
-   # Project 上のアイテム ID を取得（追加済みでも同じ ID が返る）
-   gh project item-add 3 --owner miyazak --url <Issue の URL> --format json --jq .id
+   # Project 上のアイテム ID を取得する
+   # `--project` で追加済みの場合、item-add は「Content already exists」エラーになることがあるため、
+   # エラーになったら Issue 番号でアイテムを探す（エラーで手順を止めない）
+   gh project item-add 3 --owner miyazak --url <Issue の URL> --format json --jq .id \
+     || gh project item-list 3 --owner miyazak --limit 1000 --format json \
+          --jq '.items[] | select(.content.type=="Issue" and .content.number==<issue番号>) | .id'
 
    # フィールド ID と選択肢 ID を取得
    gh project field-list 3 --owner miyazak --format json
@@ -49,7 +53,14 @@ EquipHub リポジトリ（`miyazak/EquipHub`）に Issue を作成し、Project
 
    Project ID は `gh project list --owner miyazak --format json` で取得する。
 
-8. 作成された Issue の URL と、設定したラベル・フィールド・Sprint・Milestone を報告する
+8. 設定できたかを確認する。Priority が優先度ラベルと一致し、Size と（指定した場合は）Sprint・Milestone が入っていること。途中でエラーになった場合も、この確認で抜けを見つけて設定し直す
+
+   ```bash
+   gh project item-list 3 --owner miyazak --limit 1000 --format json \
+     --jq '.items[] | select(.content.type=="Issue" and .content.number==<issue番号>) | {status, priority, size, sprint: .sprint.title, milestone: .milestone.title, labels}'
+   ```
+
+9. 作成された Issue の URL と、設定したラベル・フィールド・Sprint・Milestone を報告する
 
 ## ラベルと Project フィールド
 

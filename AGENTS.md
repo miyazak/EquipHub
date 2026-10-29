@@ -21,7 +21,7 @@ public/app.js        画面ロジック
 public/styles.css    スタイル
 data/db.json         備品データ（.gitignore 対象）
 docs/project-seed.md GitHub Projects 用のバックログ種
-.github/             Issue テンプレート（Epic / Story / Task / Bug）と PR テンプレート
+.github/             Issue テンプレート（Epic / Story / Task / Bug）、PR テンプレート、GitHub Actions のワークフロー
 .claude/skills/      Claude Code のスキル（create-issue / split-issue / create-test-viewpoints / create-pr）
 ```
 
@@ -90,6 +90,7 @@ Issue → ブランチ → PR → マージ（GitHub Projects 上で Done に自
   - `Milestone`: リポジトリの Milestone。詳細は下の「Sprint と Milestone」
 - Issue の種類はラベルで表す: `epic` / `story` / `task` / `bug`
 - 優先度ラベル: `p1` / `p2` / `p3`（Project の Priority と同じ段階。ラベルと Priority は同じ値にそろえる）
+- すべての Issue に Priority と Size を設定する。抜けや食い違いは下の「Priority と Size の確認」で見つける
 - 有効な組み込みワークフロー: Item closed（クローズで `Done`）、Pull request merged（マージで PR を `Done`）、Auto-close issue、Auto-add to project など。無効化するとマージ後の自動遷移が止まるため、変更する場合は本ファイルも更新する
 
 ### Sprint と Milestone
@@ -122,11 +123,35 @@ gh api repos/miyazak/EquipHub/milestones --jq '.[] | "\(.title)\t\(.due_on)"'
 gh issue edit <issue番号> --milestone "<Milestone 名>"
 ```
 
+### Priority と Size の確認
+
+Web 画面の Issue テンプレートから起票した場合や、手順の途中でエラーになった場合は、Project の Priority / Size が設定されないことがある。次のタイミングで下のコマンドを実行し、出力された Issue を設定し直す（何も出力されなければ問題なし）。
+
+- スプリント計画のとき（次のスプリントに割り当てる前）
+- スプリントの終了時
+- Issue をまとめて起票・分解した後
+
+```bash
+# 優先度ラベルと Priority が食い違っている、または Size が空の Issue を一覧にする
+gh project item-list 3 --owner miyazak --limit 1000 --format json \
+  --jq '.items[] | select(.content.type=="Issue") | (([.labels[]? | select(test("^p[123]$"))][0] // "") | ascii_upcase) as $l | select($l != (.priority // "") or .size == null) | "#\(.content.number)\tlabel=\($l)\tPriority=\(.priority // "-")\tSize=\(.size // "-")"'
+```
+
+Priority は GitHub Actions（`.github/workflows/sync-project-priority.yml`）でも自動で同期する。
+
+- Issue の起票・再オープン・ラベルの変更時に、優先度ラベル（`p1`〜`p3`）の値を Project の Priority に設定する（Issue が Project にない場合は追加する）
+- 起票時に優先度ラベルまたは Size がない場合は、Issue に設定を促すコメントを付ける
+- Size はラベルがないため自動では設定しない。起票した人が設定する
+- 実行には、Project を操作できる Personal Access Token（classic、`project` スコープ）をリポジトリの Secret `PROJECT_TOKEN` に登録しておく必要がある。未登録の場合、ワークフローは何もせずに終了する
+
 ### Status の変更
 
 ```bash
-# Project 上のアイテム ID を取得（追加済みでも同じ ID が返る）
-gh project item-add 3 --owner miyazak --url https://github.com/miyazak/EquipHub/issues/<issue番号> --format json --jq .id
+# Project 上のアイテム ID を取得する
+# 追加済みの場合、item-add は「Content already exists」エラーになることがあるため、Issue 番号で探し直す
+gh project item-add 3 --owner miyazak --url https://github.com/miyazak/EquipHub/issues/<issue番号> --format json --jq .id \
+  || gh project item-list 3 --owner miyazak --limit 1000 --format json \
+       --jq '.items[] | select(.content.type=="Issue" and .content.number==<issue番号>) | .id'
 
 # Status フィールドと選択肢の ID は gh project field-list 3 --owner miyazak --format json で確認する
 gh project item-edit --project-id <Project ID> --id <アイテム ID> \

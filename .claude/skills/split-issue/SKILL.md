@@ -34,7 +34,7 @@ description: EquipHub の Epic や Story を、実装できる粒度の子 Issue
    - 依存関係: 先に終わらせる必要がある子 Issue があれば「補足」に書く
 5. **起票前に、子 Issue の一覧（タイトル・Size・Priority・依存関係）と、親 Issue の受け入れ条件との対応をユーザーに確認してもらう**
    - 親 Issue の受け入れ条件のうち、どの子 Issue でも満たされないものがあれば指摘する
-6. 子 Issue を起票し、Project のフィールドを設定する（コマンドは create-issue スキルの手順 6〜7）
+6. 子 Issue を起票し、Project のフィールドを設定する（コマンドは create-issue スキルの手順 6〜7）。すべて起票したら、create-issue スキルの手順 8 と AGENTS.md の「Priority と Size の確認」のコマンドで、設定の抜けがないことを確認する
 7. 子 Issue を親 Issue のサブ Issue として登録する
 
    ```bash
