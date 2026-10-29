@@ -84,9 +84,41 @@ Issue → ブランチ → PR → マージ（GitHub Projects 上で Done に自
   - `Status`: Backlog / Ready / In progress / In review / Done
   - `Priority`: P1 / P2 / P3
   - `Size`: XS / S / M / L / XL
+  - `Sprint`: スプリント（Iteration）。詳細は下の「Sprint と Milestone」
+  - `Milestone`: リポジトリの Milestone。詳細は下の「Sprint と Milestone」
 - Issue の種類はラベルで表す: `epic` / `story` / `task` / `bug`
 - 優先度ラベル: `p1` / `p2` / `p3`（Project の Priority と同じ段階。ラベルと Priority は同じ値にそろえる）
 - 有効な組み込みワークフロー: Item closed（クローズで `Done`）、Pull request merged（マージで PR を `Done`）、Auto-close issue、Auto-add to project など。無効化するとマージ後の自動遷移が止まるため、変更する場合は本ファイルも更新する
+
+### Sprint と Milestone
+
+Sprint（スプリント）と Milestone（リリース目標）は今後追加されていくため、一覧は本ファイルに記載せず、下のコマンドや GitHub の画面で確認する。
+
+- Sprint: Project の Iteration フィールド `Sprint`
+  - 1 スプリントは 1 週間（月曜〜日曜）
+  - 名前は `Sprint <連番>`
+  - スプリントごとにテーマ（取り組む Epic など）を決める
+- Milestone: リポジトリの Milestone。リリース目標を表し、原則として Epic と対応させて期限を設定する
+- 割り当てのルール
+  - 起票時に、着手するスプリントが決まっていれば Sprint を、対応する Epic があれば Milestone を指定する
+  - 着手時期が未定の Issue は Sprint を空にしておき、スプリント計画（Project のビュー「Sprint planning」）で割り当てる
+  - スプリント終了時に `Done` になっていない Issue は、次のスプリントに繰り越す（Sprint を次のスプリントに変更する）。繰り越す前に、分割や優先度の見直しが必要かを検討する
+- スプリント運用用の Project のビュー: Current sprint（今のスプリント）、Next sprint（次のスプリント）、Sprint planning（未割り当ての Open な Issue）、Sprint roadmap（時間軸）
+
+```bash
+# Sprint の一覧と ID を確認する
+gh api graphql -f query='query{user(login:"miyazak"){projectV2(number:3){field(name:"Sprint"){... on ProjectV2IterationField{id configuration{iterations{id title startDate duration} completedIterations{id title startDate}}}}}}}'
+
+# Issue に Sprint を設定する（アイテム ID の取得方法は下の「Status の変更」と同じ）
+gh project item-edit --project-id <Project ID> --id <アイテム ID> \
+  --field-id <Sprint フィールド ID> --iteration-id <Sprint の ID>
+
+# Milestone の一覧を確認する
+gh api repos/miyazak/EquipHub/milestones --jq '.[] | "\(.title)\t\(.due_on)"'
+
+# Issue に Milestone を設定する
+gh issue edit <issue番号> --milestone "<Milestone 名>"
+```
 
 ### Status の変更
 

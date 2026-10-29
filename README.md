@@ -33,8 +33,11 @@
 | PR の作成 | Claude Code の `/create-pr`。規約どおりのコミット・push・PR 作成（`Closes #<番号>`、AI 生成部分、人間レビュー観点）を行う |
 | PR の作成（Web 画面） | PR テンプレートが自動で入る |
 | Status の自動遷移 | PR のマージで Issue がクローズされ、Project の Status が `Done` になる |
+| スプリント運用 | Project の `Sprint`（1 週間単位）に Issue を割り当て、スプリント用のビューで計画・進捗を確認する |
+| リリース目標の管理 | リポジトリの Milestone（期限付き）に Issue を割り当て、リリース目標ごとの進捗を確認する |
+| Epic の進捗管理 | Epic の子 Issue をサブ Issue として登録し、Epic ごとの完了数を確認する |
 
-作業ブランチの命名、コミットメッセージの形式、Status の運用などのルールは [AGENTS.md](AGENTS.md) にまとめています。
+作業ブランチの命名、コミットメッセージの形式、Status・Sprint・Milestone の運用などのルールは [AGENTS.md](AGENTS.md) にまとめています。
 
 ## ローカル実行手順
 
@@ -77,3 +80,22 @@ npm run dev   # ファイル変更を監視して自動で再起動
 ## GitHub Projects
 
 Project「for demo」に、[docs/project-seed.md](docs/project-seed.md) をもとにしたバックログ（Epic / Story / Task / Bug）を登録済みです。
+
+主なフィールド:
+
+| フィールド | 内容 |
+|---|---|
+| Status | Backlog / Ready / In progress / In review / Done |
+| Priority | P1 / P2 / P3（優先度ラベル `p1`〜`p3` と同じ値） |
+| Size | XS / S / M / L / XL |
+| Sprint | 1 週間単位のスプリント（月曜〜日曜） |
+| Milestone | リリース目標（リポジトリの Milestone） |
+
+スプリント運用向けのビュー:
+
+| ビュー | 内容 |
+|---|---|
+| Current sprint | 今のスプリントの Issue を Status ごとのボードで表示 |
+| Next sprint | 次のスプリントに割り当てた Issue を表示 |
+| Sprint planning | スプリント未割り当ての Open な Issue を表示（スプリント計画用） |
+| Sprint roadmap | スプリントと Milestone を時間軸で表示 |
