@@ -63,10 +63,14 @@ Issue → ブランチ → PR → マージ（GitHub Projects 上で Done に自
    - 1 行目の先頭に必ず Issue 番号を付ける（GitHub 上でコミットと Issue を相互に辿れるようにするため）
    - `#` で始まる行はエディタでの編集時にコメント扱いで消えるため、`git commit -m "..."` または `git commit -F <ファイル>` で渡す（エディタを使う場合は `git config commit.cleanup scissors` を設定する）
 4. `main` へ直接コミット・push しない
-5. PR は `create-pr` スキルを使って作成する。タイトルはコミットメッセージと同じ `#<issue番号> <type>: <要約>` とし、本文には次を必ず含める
+5. 機能を追加・変更・削除したら、同じ PR で [README.md](README.md) を更新する
+   - 「現在できること」（アプリ / 開発フロー）、「API」、主な制約が実装と一致しているか確認する
+   - 制約を解消した場合（例: 過去日のチェックを追加した）は、主な制約から削除する
+   - 機能に影響しない変更（リファクタリング、テストのみなど）は更新不要
+6. PR は `create-pr` スキルを使って作成する。タイトルはコミットメッセージと同じ `#<issue番号> <type>: <要約>` とし、本文には次を必ず含める
    - `Closes #<issue番号>`（マージ時に Issue をクローズし、Project 上で Done に遷移させるため）
    - 「AI 生成部分」と「人間レビュー観点」
-6. PR がマージされたら、Issue をクローズし、Project 上の Status を `Done` にする
+7. PR がマージされたら、Issue をクローズし、Project 上の Status を `Done` にする
    - 通常は自動で行われる: `Closes #<issue番号>` によりマージ時に Issue がクローズされ、Project の組み込みワークフロー「Item closed」で Status が `Done` になる
    - マージ後に `gh issue view <issue番号> --json state` と Project 上の Status を確認する
    - 反映されていない場合（`Closes` の書き漏れ、`main` 以外へのマージなど）は手動で対応する
