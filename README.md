@@ -74,13 +74,6 @@ npm run dev   # ファイル変更を監視して自動で再起動
 
 エラー時は `{ "message": "..." }` を返します（400: 必須項目なし、404: 備品が存在しない、409: 状態が不正）。
 
-## GitHub Projects デモ向けの使い方
+## GitHub Projects
 
 Project「for demo」に、[docs/project-seed.md](docs/project-seed.md) をもとにしたバックログ（Epic / Story / Task / Bug）を登録済みです。
-
-おすすめデモの流れ:
-
-1. Project の Backlog から、Priority の高い Issue を選ぶ
-2. 作業ブランチを作成し、Issue の Status を `In progress` にする
-3. AI で実装し、`/create-pr` で PR を作成する
-4. PR をマージすると、Issue がクローズされ Status が `Done` に自動遷移する
