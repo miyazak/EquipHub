@@ -36,6 +36,7 @@
 | PR の作成（Web 画面） | PR テンプレートが自動で入る |
 | Status の自動遷移 | PR のマージで Issue がクローズされ、Project の Status が `Done` になる |
 | Priority の自動同期 | 優先度ラベル（`p1`〜`p3`）を付けると、GitHub Actions が Project の Priority に反映する。起票時に優先度ラベルや Size がなければ、Issue にコメントで知らせる（Secret `PROJECT_TOKEN` の登録が必要） |
+| テストの自動実行 | `main` への push と、PR の作成・更新のたびに、GitHub Actions が `npm test` を Node.js 18 / 24 で実行し、結果を PR のチェック欄に表示する |
 | スプリント運用 | Project の `Sprint`（1 週間単位）に Issue を割り当て、スプリント用のビューで計画・進捗を確認する |
 | リリース目標の管理 | リポジトリの Milestone（期限付き）に Issue を割り当て、リリース目標ごとの進捗を確認する |
 | Epic の進捗管理 | Epic の子 Issue をサブ Issue として登録し、Epic ごとの完了数を確認する |
