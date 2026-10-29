@@ -78,6 +78,7 @@ cp .env.example .env
 
 ```bash
 npm run dev   # ファイル変更を監視して自動で再起動
+npm test      # API の自動テストを実行（data/db.json は書き換えない）
 ```
 
 ## API
