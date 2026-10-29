@@ -76,6 +76,8 @@ Issue → ブランチ → PR → マージ（GitHub Projects 上で Done に自
 6. PR は `create-pr` スキルを使って作成する。タイトルはコミットメッセージと同じ `#<issue番号> <type>: <要約>` とし、本文には次を必ず含める
    - `Closes #<issue番号>`（マージ時に Issue をクローズし、Project 上で Done に遷移させるため）
    - 「AI 生成部分」と「人間レビュー観点」
+
+   PR を作成したら、PR のチェック（Test。GitHub Actions による `npm test`）がすべて成功していることを確認してから、レビュー・マージに進む。失敗した場合は原因を直して push し直す
 7. PR がマージされたら、Issue をクローズし、Project 上の Status を `Done` にする
    - 通常は自動で行われる: `Closes #<issue番号>` によりマージ時に Issue がクローズされ、Project の組み込みワークフロー「Item closed」で Status が `Done` になる
    - マージ後に `gh issue view <issue番号> --json state` と Project 上の Status を確認する

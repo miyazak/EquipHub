@@ -29,7 +29,7 @@ description: EquipHub の変更をコミットし、GitHub に Pull Request を�
    gh pr create --base main --title "<タイトル>" --body-file <本文ファイル>
    ```
 
-11. 作成された PR の URL を報告する。あわせて、マージ後に Issue のクローズと Status の `Done` への遷移を確認する必要があることを伝える（自動で反映されなかった場合の対応は AGENTS.md の開発フロー 7）
+11. 作成された PR の URL を報告する。PR のチェック（Test）の結果を `gh pr checks <PR番号> --watch` で確認し、あわせて報告する（失敗した場合は原因を調べて直す）。マージ後に Issue のクローズと Status の `Done` への遷移を確認する必要があることも伝える（自動で反映されなかった場合の対応は AGENTS.md の開発フロー 7）
 
 ## タイトル
 
