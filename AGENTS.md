@@ -11,6 +11,7 @@ EquipHub は社内デモ用の備品貸し出し管理 Web アプリです。
 ## 技術構成
 
 - Node.js 18 以上 / Express 4（CommonJS）
+- 環境変数はリポジトリ直下の `.env` から dotenv で読み込む（設定できる項目は `.env.example`）
 - データは `data/db.json` を直接読み書き（DB なし）
 - フロントエンドは `public/` の素の HTML / CSS / JavaScript（フレームワーク・ビルドなし）
 

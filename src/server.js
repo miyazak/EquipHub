@@ -1,6 +1,10 @@
+const path = require('path');
+
+// リポジトリ直下の .env を読み込む（既に設定済みの環境変数は上書きしない）
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
 const express = require('express');
 const fs = require('fs');
-const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
