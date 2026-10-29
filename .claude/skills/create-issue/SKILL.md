@@ -17,15 +17,20 @@ EquipHub リポジトリ（`miyazak/EquipHub`）に Issue を作成し、Project
 1. 依頼内容から Issue の種類を決める: Epic / Story / Task / Bug / Spike
 2. 重複を確認する: `gh issue list --state all --search "<キーワード>"`（seed の項目は #1〜#20 に登録済み）
 3. Bug の場合は、コード（`src/server.js`, `public/app.js`）を読んで実際に再現するか確認する。再現しない場合は起票せず、ユーザーに報告する
-4. 下のテンプレートでタイトル・本文・ラベル・Project フィールドの値を決め、**作成前にユーザーに内容を確認してもらう**（複数件を一括登録する場合は一覧で確認する）
-5. Issue を作成する。本文は一時ファイルに書いて `--body-file` で渡す（改行や記号の崩れを防ぐ）
+4. Sprint と Milestone を決める（ルールは AGENTS.md の「Sprint と Milestone」）
+   - Sprint: 着手するスプリントが決まっていれば指定する。未定なら空にする（スプリント計画で割り当てる）
+   - Milestone: 対応する Epic のリリース目標があれば指定する。なければ空にする
+   - どちらも、会話から分からない場合はユーザーに聞く。Sprint と Milestone の一覧は下のコマンドで確認し、存在しないものは勝手に作らない
+5. 下のテンプレートでタイトル・本文・ラベル・Project フィールド・Sprint・Milestone の値を決め、**作成前にユーザーに内容を確認してもらう**（複数件を一括登録する場合は一覧で確認する）
+6. Issue を作成する。本文は一時ファイルに書いて `--body-file` で渡す（改行や記号の崩れを防ぐ）。Milestone を指定する場合は `--milestone` を付ける
 
    ```bash
    gh issue create --title "<タイトル>" --body-file <本文ファイル> \
-     --label "<種類ラベル>" --label "<優先度ラベル>" --project "for demo"
+     --label "<種類ラベル>" --label "<優先度ラベル>" --project "for demo" \
+     --milestone "<Milestone 名>"
    ```
 
-6. Project のフィールド（Priority / Size）を設定する
+7. Project のフィールド（Priority / Size / Sprint）を設定する
 
    ```bash
    # Project 上のアイテム ID を取得（追加済みでも同じ ID が返る）
@@ -36,11 +41,15 @@ EquipHub リポジトリ（`miyazak/EquipHub`）に Issue を作成し、Project
 
    gh project item-edit --project-id <Project ID> --id <アイテム ID> \
      --field-id <フィールド ID> --single-select-option-id <選択肢 ID>
+
+   # Sprint を設定する（Sprint の ID は下の「Sprint と Milestone の確認」で取得する）
+   gh project item-edit --project-id <Project ID> --id <アイテム ID> \
+     --field-id <Sprint フィールド ID> --iteration-id <Sprint の ID>
    ```
 
    Project ID は `gh project list --owner miyazak --format json` で取得する。
 
-7. 作成された Issue の URL と、設定したラベル・フィールドを報告する
+8. 作成された Issue の URL と、設定したラベル・フィールド・Sprint・Milestone を報告する
 
 ## ラベルと Project フィールド
 
@@ -56,6 +65,20 @@ EquipHub リポジトリ（`miyazak/EquipHub`）に Issue を作成し、Project
 - Project の Priority: P1 / P2 / P3（優先度ラベルと同じ値にする。例: `p2` なら P2）
 - Project の Size: XS / S / M / L / XL
 - 存在しないラベルは勝手に作らない（`gh label list` で確認する）
+
+## Sprint と Milestone の確認
+
+Sprint と Milestone は今後追加されていくため、起票のたびに一覧を確認する。
+
+```bash
+# Sprint の一覧（フィールド ID、各 Sprint の ID・名前・開始日）
+gh api graphql -f query='query{user(login:"miyazak"){projectV2(number:3){field(name:"Sprint"){... on ProjectV2IterationField{id configuration{iterations{id title startDate duration}}}}}}}'
+
+# Milestone の一覧（名前と期限）
+gh api repos/miyazak/EquipHub/milestones --jq '.[] | "\(.title)\t\(.due_on)"'
+```
+
+- 終了済みのスプリントには割り当てない（`iterations` に含まれるのは現在と今後のスプリント）
 
 ## タイトル
 
